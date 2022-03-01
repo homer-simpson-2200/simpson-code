@@ -18,7 +18,7 @@ Data = Data.values
 
 # split data function
 def split(how_many, result_data, what_data):
-    x_num_train, y_num_train, x_validation_test, y_validation_test, x_real = [], [], [], [], [], [], []
+    x_num_train, y_num_train, x_validation_test, y_validation_test, x_real = [], [], [], [], []
     su = how_many + result_data
     x_train_data = np.delete(what_data, (len(what_data)-1, len(what_data)-2))  # this data use for forming x high data
     y_train_data = np.delete(what_data, (len(what_data)-1))  # this data use for forming y high data
