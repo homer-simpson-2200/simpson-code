@@ -21,7 +21,7 @@ data = pd.read_csv('/AAPL (4).csv')
 # add new data
 data = data.drop(0, axis=0)
 data = data[::-1]
-new_data = pd.DataFrame({'Date': [1], 'Open': [1], 'High': [Data], 'Close': [1], 'Adj Close': [1], 'Volume': [1]})
+new_data = pd.DataFrame({'Date': [1], 'Open': [1], 'High': [Data], 'Low': [1], 'Close': [1], 'Adj Close': [1], 'Volume': [1]})
 data = pd.concat([data, new_data])
 high = data['High'].values
 new = pd.DataFrame({"high": high}).dropna().reset_index(drop=True)
