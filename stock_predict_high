@@ -9,27 +9,34 @@ import yfinance as yf
 import tensorflow as tf
 from split.split_data import split_num_data
 
-drop_rate = 0.5
+# get today date
 date1 = datetime.datetime.now(timezone('US/Eastern'))
 date1 = date1.date()
+# get data from yahoo, when stock market end start model
 Data = yf.download('AAPL', start=date1)
 Data = Data['High']
 Data = Data.values
 
 data = pd.read_csv('/AAPL (4).csv')
-# data = data.drop(0, axis=0)
-# data = data[::-1]
-# new_data = pd.DataFrame({'Date': [1], 'Open': [1], 'High': [Data], 'Close': [1], 'Adj Close': [1], 'Volume': [1]})
-# data = pd.concat([data, new_data])
+# add new data
+data = data.drop(0, axis=0)
+data = data[::-1]
+new_data = pd.DataFrame({'Date': [1], 'Open': [1], 'High': [Data], 'Close': [1], 'Adj Close': [1], 'Volume': [1]})
+data = pd.concat([data, new_data])
 high = data['High'].values
 new = pd.DataFrame({"high": high}).dropna().reset_index(drop=True)
+# scaling datas to 1~0
 scaler = MinMaxScaler()
 scaler.fit(new)
 new = scaler.transform(new)
 
+# split data
 x_train, y_train, x_val, y_val, x_pre = split_num_data(100, 1, new)  # split data
+
 # save best weight
 model_ckpt = ModelCheckpoint('model_ckpt.h5', monitor='val_accuracy', save_best_only=True, mode='auto')  
+
+drop_rate = 0.5
 # LSTM
 model = Sequential()
 model.add(LSTM(100, return_sequences=True, input_shape=(100, 1)))
@@ -43,6 +50,7 @@ loss, score = model.evaluate(x_val, y_val)  # save model score with adding metri
 
 pre = model.predict_classes(x_pre)  # predict
 pre = scaler.inverse_transform(pre)  # rescale?
+# write score and predict result
 f = open("/model_accuracy.txt", "a")
 f.write("%d{score=")
 f.write(str(score))
